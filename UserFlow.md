@@ -1,3 +1,6 @@
+# SMS Shield User Flow
+
+```mermaid
 flowchart TD
 
 A([Start])
@@ -67,3 +70,4 @@ FC8 --> FC9[(Database Read Anomalies)]
 FC9 --> FC10[Review Messages]
 FC10 --> FC11([End C])
 end
+```

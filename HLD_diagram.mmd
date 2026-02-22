@@ -1,0 +1,59 @@
+flowchart LR
+
+%% ==============================
+%% FRONTEND LAYER
+%% ==============================
+FE[Frontend Layer<br/>React Dashboard] --> API((API Gateway<br/>REST APIs))
+
+%% ==============================
+%% SERVICE LAYER
+%% ==============================
+
+API --> AUTH[Authentication Service<br/>JWT / Login]
+API --> SCORE[Scoring Service<br/>Upload & Trigger ML]
+API --> DASH[Dashboard Service<br/>Drift Visualizations]
+API --> HIST[History Service<br/>Batch Tracking]
+API --> SEARCH[Analytics Service<br/>Trend Analysis]
+
+%% ==============================
+%% ML PIPELINE (CORE PROCESSING)
+%% ==============================
+
+SCORE --> PREP[Preprocessing Service<br/>Text Cleaning]
+PREP --> NGRAM[Feature Extraction<br/>Character N-gram]
+NGRAM --> PCA[PCA Reduction]
+PCA --> IF[Isolation Forest Model]
+IF --> DRIFT[Drift Aggregation Engine]
+
+%% ==============================
+%% DATABASE LAYER
+%% ==============================
+
+DRIFT --> DB[(Relational DB<br/>PostgreSQL<br/>Drift Metrics)]
+HIST --> DB
+DASH --> DB
+
+%% ==============================
+%% CACHE LAYER
+%% ==============================
+
+DASH --> CACHE[(Cache Layer<br/>Redis<br/>Trend Data)]
+
+%% ==============================
+%% ANALYTICS STORAGE
+%% ==============================
+
+SEARCH --> ANALYTICS[(Analytics Store<br/>Aggregated Metrics)]
+
+%% ==============================
+%% NOTIFICATION / ALERTS
+%% ==============================
+
+DRIFT --> ALERT[Alert Service<br/>Threshold Monitoring]
+ALERT --> NOTIF[Notification Service<br/>Email / Slack]
+
+%% ==============================
+%% FINAL OUTPUT
+%% ==============================
+
+DASH --> USER[User Dashboard View]

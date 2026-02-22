@@ -1,0 +1,48 @@
+flowchart LR
+
+%% ==============================
+%% DATA CONTRACT (LEFT)
+%% ==============================
+subgraph CONTRACT["API Data Contract"]
+    ENTITY[Entity: Drift Run]
+
+    SCHEMA["Schema:
+    run_id: UUID
+    upload_date: DateTime
+    drift_score: Float
+    anomaly_percent: Float
+    batch_size: Integer"]
+
+    EVENTS["Events:
+    - Batch Uploaded
+    - ML Processing Started
+    - Drift Computed
+    - Alerts Triggered"]
+
+    ENTITY --> SCHEMA
+    ENTITY --> EVENTS
+end
+
+%% ==============================
+%% API LAYER (CENTER)
+%% ==============================
+API[FastAPI REST API]
+
+%% ==============================
+%% STORAGE + VALIDATION (RIGHT)
+%% ==============================
+DB[(PostgreSQL Database)]
+VALIDATE[Validation & Enforcement]
+
+%% ==============================
+%% ANALYTICS PLATFORM (BOTTOM)
+%% ==============================
+ANALYTICS[Analytics / Dashboard Layer]
+
+%% ==============================
+%% DATA FLOW
+%% ==============================
+CONTRACT --> API
+API --> DB
+DB --> VALIDATE
+VALIDATE --> ANALYTICS

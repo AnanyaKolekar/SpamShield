@@ -1,0 +1,54 @@
+erDiagram
+
+    USERS {
+        UUID user_id PK
+        string name
+        string email
+        string password_hash
+        string role
+        datetime created_at
+    }
+
+    BATCH_RUNS {
+        UUID run_id PK
+        UUID user_id FK
+        datetime upload_date
+        string source_type
+        int batch_size
+        float drift_score
+        float anomaly_percent
+        string status
+    }
+
+    DRIFT_METRICS {
+        UUID metric_id PK
+        UUID run_id FK
+        date metric_date
+        float drift_score
+        float mean_anomaly_score
+        int anomaly_count
+    }
+
+    ANOMALIES {
+        UUID anomaly_id PK
+        UUID run_id FK
+        string message_text
+        float anomaly_score
+        datetime detected_at
+    }
+
+    ANALYTICS_SUMMARY {
+        UUID summary_id PK
+        date summary_date
+        float avg_drift
+        float max_drift
+        int total_batches
+        int total_anomalies
+    }
+
+    USERS ||--o{ BATCH_RUNS : uploads
+    BATCH_RUNS ||--o{ DRIFT_METRICS : generates
+    BATCH_RUNS ||--o{ ANOMALIES : contains
+    DRIFT_METRICS }o--|| ANALYTICS_SUMMARY : contributes_to
+
+    

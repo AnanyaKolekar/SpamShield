@@ -1,0 +1,15 @@
+{
+  "model_name": "SMS-Shield-IsolationForest-SVD",
+  "ngram_range": [
+    3,
+    5
+  ],
+  "max_features": 5000,
+  "svd_n_components": 100,
+  "n_estimators": 150,
+  "contamination": 0.05,
+  "train_samples_count": 4827,
+  "ham_mean_score": -0.42006111732094115,
+  "spam_mean_score": -0.4073413249132269,
+  "baseline_threshold": -0.4622994147087921
+}

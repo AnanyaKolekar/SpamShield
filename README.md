@@ -2,10 +2,9 @@
 
 A lightweight drift detection app for SMS traffic.
 
-## Live deployment
+## Live demo
 
-- **Backend:** https://sms-shield-backend.onrender.com
-- **Frontend:** https://vercel.com/ananyas-projects-64c5647f/spam-shield/13opnmSRoGcYwbuN3gC31MyM52JZ
+- https://spam-shield-git-main-ananyas-projects-64c5647f.vercel.app/
 
 ## What it does
 

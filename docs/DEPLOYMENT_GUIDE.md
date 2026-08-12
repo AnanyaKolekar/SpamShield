@@ -1,94 +1,77 @@
 # SMS Shield - Production Deployment Guide (Vercel & Render)
 
-This guide provides step-by-step instructions for deploying the **SMS Shield** application:
-- **Backend (FastAPI + ML Engine):** Deployed on **Render**
-- **Frontend (React + Vite + Tailwind):** Deployed on **Vercel**
+This guide shows how to run the project locally and where the live deployment is hosted.
+
+## Live deployment
+
+- **Backend:** https://sms-shield-backend.onrender.com
+- **Frontend:** https://vercel.com/ananyas-projects-64c5647f/spam-shield/13opnmSRoGcYwbuN3gC31MyM52JZ
 
 ---
 
 ## 1. Local Development Setup
 
-### Backend Setup
+### Backend
 ```bash
-# 1. Open project directory
-cd /path/to/SpamShield
-
-# 2. Activate virtual environment & install requirements
+cd /home/mystiqueen/Desktop/Disk-D/Projects/SpamSheild
 source venv/bin/activate
 pip install -r requirements.txt
-
-# 3. Train ML baseline model (if retrained)
 PYTHONPATH=. python ml/model_trainer.py
-
-# 4. Start FastAPI server on port 8000
 PYTHONPATH=. uvicorn backend.app.main:app --reload --host 0.0.0.0 --port 8000
 ```
-- **Backend API Docs:** `http://localhost:8000/docs`
+- **Backend Docs:** http://localhost:8000/docs
 
-### Frontend Setup
+### Frontend
 ```bash
-# In a separate terminal
 cd frontend
 npm install
 npm run dev
 ```
-- **Dashboard UI:** `http://localhost:3000`
+- **UI:** http://localhost:3000
 
 ---
 
-## 2. Deploying Backend to Render
+## 2. Deploy Backend to Render
 
-### Option A: Automatic Blueprint Deployment (`render.yaml`)
-1. Push your repository to GitHub.
-2. Go to [Render Dashboard](https://dashboard.render.com/) and click **New** -> **Blueprint**.
-3. Connect your GitHub repository. Render will automatically detect `render.yaml` and configure the Python 3.12 service.
-4. Click **Apply**.
+### Recommended: Blueprint deploy
+1. Push the repo to GitHub.
+2. On Render, click **New → Blueprint**.
+3. Select your repo and branch.
+4. Render should detect `render.yaml` automatically.
+5. Apply the Blueprint.
 
-### Option B: Manual Web Service Setup on Render
-1. Go to [Render Dashboard](https://dashboard.render.com/) -> **New Web Service**.
-2. Connect your GitHub repository.
-3. Configure settings:
+### If manual setup is needed
+1. On Render, click **New Web Service**.
+2. Connect your GitHub repo.
+3. Configure:
    - **Name:** `sms-shield-backend`
    - **Environment:** `Python 3`
-   - **Region:** Choose nearest (e.g., Oregon or Frankfurt)
    - **Branch:** `main`
-   - **Build Command:** `pip install --upgrade pip && pip install -r requirements.txt`
-   - **Start Command:** `uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT`
-4. Environment Variables:
+   - **Build command:** `pip install --upgrade pip && pip install -r requirements.txt`
+   - **Start command:** `uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT`
+4. Add env vars if needed:
    - `PYTHONPATH` = `.`
    - `DRIFT_THRESHOLD` = `0.35`
-   - `DATABASE_URL` = (Optional PostgreSQL URL or default to SQLite)
-5. Click **Create Web Service**.
-6. Copy your live Render URL (e.g. `https://sms-shield-backend.onrender.com`).
+   - `DATABASE_URL` = your PostgreSQL URL (if using Postgres)
 
 ---
 
-## 3. Deploying Frontend to Vercel
+## 3. Deploy Frontend to Vercel
 
-1. Go to [Vercel Dashboard](https://vercel.com/dashboard) -> **Add New Project**.
-2. Import your GitHub repository.
-3. Select the **`frontend`** directory as the **Root Directory**.
-4. Framework Preset: **Vite**
-5. Build Settings:
-   - **Build Command:** `npm run build`
-   - **Output Directory:** `dist`
-6. Verify `frontend/vercel.json` contains your Render backend destination URL:
-   ```json
-   {
-     "rewrites": [
-       {
-         "source": "/api/v1/:path*",
-         "destination": "https://YOUR-RENDER-BACKEND.onrender.com/api/v1/:path*"
-       }
-     ]
-   }
-   ```
-7. Click **Deploy**.
+1. On Vercel, click **Add New Project**.
+2. Import the GitHub repo.
+3. Set the root directory to `frontend`.
+4. Choose **Vite** as the framework.
+5. Use:
+   - **Build command:** `npm run build`
+   - **Output directory:** `dist`
+6. Ensure `frontend/vercel.json` rewrites `/api/v1/*` to the Render backend.
+7. Deploy.
 
 ---
 
-## 4. Verification
+## 4. Verify
 
-Once deployed:
-1. Open your Vercel URL (e.g. `https://sms-shield.vercel.app`).
-2. Test loading Dashboard KPIs, clicking **"Last 7 Days"** / **"Last 30 Days"**, and running **"Simulate Campaign"**.
+- Visit the Vercel frontend URL.
+- Confirm the app loads and dashboard data appears.
+- Confirm network calls to `/api/v1/...` are routed to `https://sms-shield-backend.onrender.com/api/v1/...`.
